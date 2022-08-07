@@ -1,11 +1,15 @@
 import React,{useState} from 'react'
+import { useEffect } from 'react';
+import { CountryDetail } from './CountryDetail';
 import Weather from './Weather';
+
 
 
 
 export function Search({countries}) {
 
   const [search,setSearch]=useState('')
+  const [country,setCountry]=useState(null)
  
   let filteredCountries;
   
@@ -14,12 +18,22 @@ export function Search({countries}) {
   if(search===''){
     filteredCountries=[]
   }
-  let country;
-
+ // let country;
+useEffect(()=>{
   if(filteredCountries.length===1){
-     country=filteredCountries
-  }
+    //country=filteredCountries
+    console.log('typeof filteredCountries', typeof filteredCountries)
+    setCountry(filteredCountries)
+    
+ }
+},[search])
+  
 
+  // function renderDetail(countryName){
+  
+  //   console.log(countryName)
+  //    //country=countryName
+  // }
   return (
     <>
 
@@ -30,24 +44,16 @@ export function Search({countries}) {
     </form>
         {
           filteredCountries.map((country,index)=>{
-            return <p key={index}>{country.name.common}</p>
+            return <div key={index}>
+            <p style={{display:'inline-block'}}>{country.name.common}</p>
+           <button onClick={()=>{
+            console.log('country',typeof country) 
+            setCountry([country])}} type='submit'>show</button>
+            </div>
           })
-        }
-        {country&&
-             <div>
-            
-          <p>capital: {country[0].capital}</p>
-          <p>area: {country[0].area}</p>
-          <ul>
-            languages: {Object.values(country[0].languages).map((language,index)=>{
-              return <li key={index}>{language}</li>
-            })}
-          </ul>
-          <img src={country[0].flags.png} alt='flag'></img>
-           <Weather latlng={country&&country[0].latlng} city={country&&country[0].capital}/>
-           </div>
-        }
         
+        }
+          <CountryDetail country={country}/>
      
     </>
   )
